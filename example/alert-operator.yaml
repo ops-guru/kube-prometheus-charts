@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: prometheus-example-rules
+  labels:
+    role: alert-rules
+    app: prometheus
+    prometheus: cncf
+#    release: cncf
+data:
+  example.rules.yaml: |-
+    groups:
+    - name: ./example.rules
+      rules:
+      - alert: ExampleAlert
+        expr: kube_deployment_status_replicas{deployment="echoheaders"} - kube_deployment_status_replicas_available{deployment="echoheaders"} > 0
+        for: 10s

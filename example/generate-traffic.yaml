@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: test
+  name: test
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - command:
+        - bash
+        - -c
+        - while [[ 1 ]]; do httperf --server echoheaders --num-conns $((
+          ( RANDOM % 100 )  + 1 )) --rate $(( ( RANDOM % 100 )  + 1 )) --timeout 1;sleep
+          $(( ( RANDOM % 10 )  + 1 ));done
+        image: dos65/httperf
+        imagePullPolicy: Always
+        name: httperf

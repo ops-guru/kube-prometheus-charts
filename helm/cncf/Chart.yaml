@@ -1,0 +1,7 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes and prometheus
+name: cncf
+version: 0.1.0
+maintainers:
+  - name: Anton
+    email: anton@opsguru.io

@@ -1,0 +1,69 @@
+alertmanager:
+  service:
+    nodePort: 30903
+    type: NodePort
+  ingress:
+    enabled: true
+    fqdn: "alertmanager.opsguru-cncf.com"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+
+prometheus:
+#  serviceMonitorSelector: {}
+  service:
+    nodePort: 30900
+    type: NodePort
+  ingress:
+    enabled: true
+    fqdn: "prometheus.opsguru-cncf.com"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+  storageSpec:
+    class: gp2
+    selector: {}
+    resources:
+      requests:
+        storage: 100Gi
+    volumeClaimTemplate:
+      spec:
+        storageClassName: gp2
+        resources:
+          requests:
+            storage: 100Gi
+
+external-dns:
+  aws:
+    region: "us-east-1"
+    zoneType: public
+  domainFilters: [opsguru-cncf.com]
+  txtOwnerId: "12345"
+  publishInternalServices: true
+  sources:
+    - ingress
+  rbac:
+    create: true
+    apiVersion: v1
+
+grafana:
+  service:
+    nodePort: 30902
+    type: NodePort
+  storageSpec:
+    class: gp2
+    accessMode: "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 4Gi
+    selector: {}
+  ingress:
+    enabled: true
+    fqdn: "grafana.opsguru-cncf.com"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+
+nginx-ingress:
+  controller:
+    publishService:
+      enabled: true
+  rbac:
+    create: true
